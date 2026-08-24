@@ -1,0 +1,41 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug STM32H7B3I-DK",
+      "type": "cortex-debug",
+      "request": "launch",
+      "servertype": "openocd",
+      "cwd": "${workspaceFolder}",
+      "executable": "${workspaceFolder}/../build/zephyr/zephyr.elf",
+      "device": "STM32H7B3LIHxQ",
+      "serverpath": "/Users/denislavtrifonov/zephyr-sdk-1.0.1/hosttools/opt/openocd/bin/openocd",
+      "searchDir": [
+        "/Users/denislavtrifonov/zephyr-sdk-1.0.1/hosttools/opt/openocd/share/openocd/scripts"
+      ],
+      "configFiles": [
+        "${workspaceFolder}/../zephyr/boards/st/stm32h7b3i_dk/support/openocd.cfg"
+      ],
+      "gdbPath": "/Users/denislavtrifonov/zephyr-sdk-1.0.1/gnu/arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb",
+      "runToEntryPoint": "main",
+      "showDevDebugOutput": "raw"
+    },
+    {
+      "name": "Attach STM32H7B3I-DK (west debugserver)",
+      "type": "cortex-debug",
+      "request": "attach",
+      "servertype": "external",
+      "preLaunchTask": "west debugserver (openocd)",
+      "cwd": "${workspaceFolder}",
+      "executable": "${workspaceFolder}/../build/zephyr/zephyr.elf",
+      "gdbTarget": "localhost:3333",
+      "device": "STM32H7B3LIHxQ",
+      "gdbPath": "/Users/denislavtrifonov/zephyr-sdk-1.0.1/gnu/arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb",
+      "postAttachCommands": [
+        "monitor reset halt"
+      ],
+      "runToEntryPoint": "main",
+      "showDevDebugOutput": "raw"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "west debugserver (openocd)",
+      "type": "shell",
+      "command": "west debugserver --runner openocd",
+      "options": {
+        "cwd": "${workspaceFolder}/.."
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "zephyr",
+        "pattern": [
+          {
+            "regexp": "^(.*)$",
+            "message": 1
+          }
+        ],
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^.*west debugserver.*$",
+          "endsPattern": "^.*Listening on port 3333 for gdb connections.*$"
+        }
+      }
+    }
+  ]
+}

@@ -567,6 +567,126 @@ Zephyr SDK
 
 ---
 
+# Manual debugging with `arm-zephyr-eabi-gdb`
+
+VS Code debugging is useful, but it is important to understand the manual flow underneath it.
+
+For this STM32H7B3I Discovery kit setup, the debugging chain looks like this:
+
+```text
+arm-zephyr-eabi-gdb
+   talks TCP to
+
+OpenOCD
+   talks SWD through
+
+ST-LINK
+   talks to
+
+STM32H7B3I target
+```
+
+GDB does not talk directly to the board. GDB talks to a GDB server. In this setup, OpenOCD is the GDB server.
+
+The easiest way to start the correct OpenOCD server is to let Zephyr do it:
+
+```sh
+west debugserver --runner openocd
+```
+
+This uses the board runner metadata from Zephyr and starts OpenOCD on the expected port:
+
+```text
+localhost:3333
+```
+
+Keep that terminal open. Then open a second terminal and start the Zephyr SDK GDB manually:
+
+```sh
+/Users/denislavtrifonov/zephyr-sdk-1.0.1/gnu/arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb ../build/zephyr/zephyr.elf
+```
+
+The important argument is:
+
+```text
+../build/zephyr/zephyr.elf
+```
+
+That ELF file contains the firmware plus debug symbols, source paths, function names, variables, and line information. Without the ELF, GDB can still connect to the target, but it will not understand the program in a useful source-level way.
+
+Inside GDB, connect to OpenOCD:
+
+```gdb
+target extended-remote localhost:3333
+```
+
+Then reset and halt the MCU:
+
+```gdb
+monitor reset halt
+```
+
+Set a breakpoint at `main` and continue:
+
+```gdb
+break main
+continue
+```
+
+Useful GDB commands:
+
+```gdb
+next
+step
+continue
+break printk
+info registers
+bt
+print some_variable
+x/16wx 0x08000000
+monitor reset halt
+monitor reset run
+quit
+```
+
+The practical two-terminal session is:
+
+Terminal 1:
+
+```sh
+west debugserver --runner openocd
+```
+
+Terminal 2:
+
+```sh
+/Users/denislavtrifonov/zephyr-sdk-1.0.1/gnu/arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb ../build/zephyr/zephyr.elf
+```
+
+Then inside GDB:
+
+```gdb
+target extended-remote localhost:3333
+monitor reset halt
+break main
+continue
+```
+
+This is the raw version of what VS Code and Cortex-Debug automate.
+
+The production perspective is that understanding this manual flow makes debugging tool problems much easier. If VS Code fails, test the lower layers separately:
+
+```text
+Can west start OpenOCD?
+Can GDB find zephyr.elf?
+Can GDB connect to localhost:3333?
+Can OpenOCD reset and halt the target?
+```
+
+That splits a confusing "debugging does not work" problem into small pieces.
+
+---
+
 # Practical west tips
 
 `west.yml` is part of the product.

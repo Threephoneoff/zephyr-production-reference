@@ -1,0 +1,13 @@
+identifier: zephyr_logger
+name: Zephyr Logger
+type: mcu
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+ram: 256
+flash: 2048
+supported:
+  - gpio
+  - uart
+vendor: custom

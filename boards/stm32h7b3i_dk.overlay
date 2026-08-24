@@ -1,0 +1,8 @@
+/ {
+    aliases {
+        debug-led = &red_led;
+    };
+};
+&usart1 {
+    current-speed = <115200>;
+};

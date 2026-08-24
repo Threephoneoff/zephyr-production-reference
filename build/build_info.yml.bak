@@ -1,0 +1,5 @@
+west:
+  command: /Users/denislavtrifonov/work/projects/zephyr-data-logger/.venv/bin/west
+    build -p always -b zephyr_logger .
+  topdir: /Users/denislavtrifonov/work/projects/zephyr-data-logger
+  version: 1.5.0

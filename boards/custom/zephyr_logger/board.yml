@@ -1,0 +1,6 @@
+board:
+  name: zephyr_logger
+  full_name: Zephyr Logger
+  vendor: custom
+  socs:
+    - name: stm32h7b3xx
