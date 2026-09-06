@@ -43,6 +43,7 @@ int main(void)
 	{
 		gpio_pin_toggle_dt(&debug_led);
 		gpio_pin_toggle_dt(&status_led);
+		printk("LED toggle \n");
 		k_msleep(SLEEP_TIME_MS);
 	}
 }

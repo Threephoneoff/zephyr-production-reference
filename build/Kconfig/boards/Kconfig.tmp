@@ -1,2 +1,0 @@
-# Load Zephyr board Kconfig descriptions.
-osource "/Users/denislavtrifonov/work/projects/zephyr-data-logger/zephyr-production-reference/boards/custom/zephyr_logger/Kconfig"

@@ -1,1 +1,0 @@
-"mcuboot":"/Users/denislavtrifonov/work/projects/zephyr-data-logger/bootloader/mcuboot":"/Users/denislavtrifonov/work/projects/zephyr-data-logger/bootloader/mcuboot/boot/zephyr/sysbuild"
