@@ -7,6 +7,7 @@
 /dts-v1/;
 #include <st/h7/stm32h7b3Xi.dtsi>
 #include <st/h7/stm32h7b3lihxq-pinctrl.dtsi>
+#include <zephyr/dt-bindings/input/input-event-codes.h>
 
 / {
 	model = "Zephyr Logger";
@@ -23,7 +24,7 @@
 		compatible = "gpio-leds";
 
 		debug_led: led_0 {
-			gpios = <&gpiog 11 GPIO_ACTIVE_HIGH>;
+			gpios = <&gpiog 11 GPIO_ACTIVE_LOW>;
 			label = "Debug LED";
 		};
 
@@ -33,11 +34,22 @@
 		};
 	};
 
+	buttons {
+		compatible = "gpio-keys";
+
+		user_button: button_0 {
+			gpios = <&gpioc 13 GPIO_ACTIVE_HIGH>;
+			label = "User button";
+			zephyr,code = <INPUT_KEY_0>;
+		};
+	};
+
 	aliases {
 		led0 = &debug_led;
 		led1 = &status_led;
 		debug-led = &debug_led;
 		status-led = &status_led;
+		sw0 = &user_button;
 	};
 };
 

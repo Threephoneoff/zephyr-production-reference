@@ -7,9 +7,10 @@ your hardware itself: its MCU, clocks, memory, enabled peripherals, pin routing,
 default Kconfig features. Once the board exists, applications can target it with
 `-b zephyr_logger` without pretending that the hardware is an STM32H7B3I Discovery kit.
 
-This first board revision intentionally contains only:
+This board revision intentionally contains only:
 
 - two GPIO outputs on PG11 and PG2;
+- one active-high push button on PC13;
 - USART1 TX/RX on PA9 and PA10;
 - the UART console and Zephyr shell;
 - the STM32H7B3XXQ MCU, internal flash, and SRAM.
@@ -54,7 +55,7 @@ The two outputs use the same pins as the Discovery kit LEDs:
 
 ```dts
 debug_led: led_0 {
-	gpios = <&gpiog 11 GPIO_ACTIVE_HIGH>;
+	gpios = <&gpiog 11 GPIO_ACTIVE_LOW>;
 };
 
 status_led: led_1 {
@@ -65,6 +66,24 @@ status_led: led_1 {
 They are modeled with `gpio-leds` because they drive LEDs in this example. If the
 same pins later control unrelated signals, use a binding that represents that
 hardware instead of describing every output as an LED.
+
+The PC13 button is modeled using the standard `gpio-keys` binding and exposed
+through the conventional `sw0` alias:
+
+```dts
+buttons {
+	compatible = "gpio-keys";
+
+	user_button: button_0 {
+		gpios = <&gpioc 13 GPIO_ACTIVE_HIGH>;
+		zephyr,code = <INPUT_KEY_0>;
+	};
+};
+```
+
+The application configures it as an input with an active-edge interrupt. The
+interrupt callback toggles the debug LED, while the status LED remains a periodic
+heartbeat.
 
 USART1 is routed to the same pins as the Discovery kit:
 
@@ -141,6 +160,8 @@ rg "CONFIG_(BOARD|SOC|SHELL|UART_CONSOLE|GPIO)" \
   its display, SDRAM, camera, SD card, CAN transceiver, and other peripherals.
 - Using `debug-led` inside `DT_ALIAS()` in C. Devicetree hyphens become underscores,
   so the C form is `DT_ALIAS(debug_led)`.
+- Assuming the button polarity from the pin number alone. `GPIO_ACTIVE_HIGH` must
+  match the pull resistor and switch wiring on the schematic.
 - Forgetting that `chosen` selects a device but does not enable the shell software;
   both the DTS and Kconfig sides are required.
 
@@ -155,8 +176,10 @@ Discovery kit because the custom schematic details are not yet available:
 These settings are not determined solely by using the same MCU. Confirm them
 against the oscillator and power connections on the Zephyr Logger schematic before
 flashing. If either differs, update the clock tree or power setting first. Also
-confirm that PG11/PG2 LEDs are active-high and have appropriate current-limiting
-resistors.
+confirm that the PG11 debug LED is active-low, that the PG2 status LED is
+active-high, and that both have appropriate current-limiting resistors. Confirm
+that PC13 is held low when released and driven high when pressed; otherwise change
+the button polarity and interrupt edge.
 
 ## Production perspective
 

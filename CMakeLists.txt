@@ -6,6 +6,7 @@ list(APPEND BOARD_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 project(zephyr_production_reference)
 
-target_sources(app PRIVATE src/main.c)
-target_sources_ifdef(CONFIG_MYFUNCTION app PRIVATE test/myfunction.c)
-target_include_directories(app PRIVATE test)
+target_sources(app PRIVATE
+    src/main.c
+    src/shell_commands.c
+)
