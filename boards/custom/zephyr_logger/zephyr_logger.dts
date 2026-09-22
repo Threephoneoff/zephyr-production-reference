@@ -68,6 +68,17 @@
 	status = "okay";
 };
 
+/* Dedicated 48 MHz kernel clock for SDMMC1: 24 MHz / 12 * 192 / 8. */
+&pll2 {
+	div-m = <12>;
+	mul-n = <192>;
+	div-p = <8>;
+	div-q = <8>;
+	div-r = <8>;
+	clocks = <&clk_hse>;
+	status = "okay";
+};
+
 &rcc {
 	clocks = <&pll>;
 	clock-frequency = <DT_FREQ_M(280)>;
@@ -87,5 +98,22 @@
 	pinctrl-0 = <&usart1_tx_pa9 &usart1_rx_pa10>;
 	pinctrl-names = "default";
 	current-speed = <115200>;
+	status = "okay";
+};
+
+/*
+ * microSD connector, matching the STM32H7B3I-DK wiring.
+ * The card uses SDMMC1 in 4-bit mode; PI8 is low while a card is inserted.
+ */
+&sdmmc1 {
+	clocks = <&rcc STM32_CLOCK(AHB3, 16)>,
+		 <&rcc STM32_SRC_PLL2_R SDMMC_SEL(1)>;
+	pinctrl-0 = <&sdmmc1_d0_pc8 &sdmmc1_d1_pc9
+		     &sdmmc1_d2_pc10 &sdmmc1_d3_pc11
+		     &sdmmc1_ck_pc12 &sdmmc1_cmd_pd2>;
+	pinctrl-names = "default";
+	cd-gpios = <&gpioi 8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+	disk-name = "SD";
+	bus-width = <4>;
 	status = "okay";
 };

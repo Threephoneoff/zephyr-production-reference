@@ -9,4 +9,5 @@ project(zephyr_production_reference)
 target_sources(app PRIVATE
     src/main.c
     src/shell_commands.c
+    src/storage.c
 )

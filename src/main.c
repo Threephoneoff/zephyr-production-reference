@@ -6,6 +6,9 @@
 
 #include <zephyr/kernel.h>
 #include <zephyr/drivers/gpio.h>
+#include <zephyr/drivers/uart.h>
+
+#include "storage.h"
 
 #define SLEEP_TIME_MS 500
 
@@ -68,6 +71,11 @@ int main(void)
 
 	printk("Zephyr Logger ready; press the button to toggle the debug LED\n");
 	printk("Shell is available on USART1 at 115200 baud\n");
+
+	ret = storage_mount();
+	if (ret < 0) {
+		printk("Continuing without SD storage\n");
+	}
 
 	while (1)
 	{
